@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - ${DB_PORT}:5432
+
+  app:
+    container_name: apiTasklist
+    restart: always
+    env_file:
+        - .env
+    depends_on: 
+        - db
+    build: .
+    command: npm run dev
+    ports:
+        - ${SERVER_PORT}:${SERVER_PORT}
+    volumes:
+        - .:/user/apiTasklist
